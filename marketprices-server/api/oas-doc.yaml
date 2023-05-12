@@ -1,0 +1,78 @@
+openapi: 3.0.3
+info:
+  version: 1.0.0
+  title: oas_workshop
+  description: API for workshop 
+
+paths:
+  /api/v1/marketprices:
+    x-router-controller: marketpricesController
+    get:
+      description: Returns all marketprices
+      operationId: getMarketprices
+      responses:
+        200:
+          description: Marketprice list
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/marketprice'
+        default:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error'
+  /api/v1/marketprices/{province}:
+    x-router-controller: marketpricesController
+    get:
+      description: Returns a single marketprice by its province
+      operationId: findByprovince
+      parameters:
+        - required: true
+          name: province
+          description: province of the marketprice to fetch
+          in: path
+          schema:
+            type: string
+      responses:
+        200:
+          description: Marketprice found by province
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/marketprice'
+        default:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error'
+
+components:
+  schemas:
+    marketprice:
+        type: object
+        required:
+          - province
+        properties:
+          province:
+            type: string
+          year:
+            type: number
+          pib_current_price:
+            type: number
+          pib_percentage_structure:
+            type: number
+          pib_variation_rate:
+            type: number
+    error:
+      type: object
+      required:
+        - message
+      properties:
+        message:
+          type: string
+      additionalProperties: true
